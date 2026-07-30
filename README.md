@@ -1,6 +1,6 @@
 # Baby Turismo
 
-Sistema SaaS multi-tenant para gestão de frota, motoristas, viagens, manutenções e operações financeiras de empresas de transporte rodoviário de passageiros.
+Sistema de gestão operacional desenvolvido para a Baby Turismo, empresa de transporte rodoviário de passageiros. Possui painel administrativo web para controle de frota, viagens, motoristas, financeiro e estoque, além de portal mobile para motoristas com checklists, abastecimentos e reportes em tempo real.
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
@@ -77,16 +77,17 @@ BabyC/
 
 | Módulo | Descrição |
 |--------|-----------|
-| Auth | JWT com Refresh Tokens, RBAC (Admin, Gestor, Motorista), seed de admins |
-| Dashboard | KPIs operacionais e financeiros, gráficos Recharts/ECharts, alertas |
-| Drivers | Cadastro, CNH, disponibilidade, portal do motorista |
+| Auth | JWT com Refresh Tokens, RBAC (Admin, Gestor, Motorista) |
+| Dashboard | KPIs operacionais e financeiros, gráficos Recharts/ECharts, alertas em tempo real |
+| Drivers | Cadastro de motoristas, CNH, disponibilidade, histórico |
 | Vehicles | Frota, documentação (ANTT/ARTESP/Seguro/Licenciamento), alertas de vencimento |
-| Trips | Agenda, checklists operacionais, status em tempo real |
+| Trips | Agenda de viagens, checklists operacionais, controle de status |
+| Driver Portal | Portal mobile-first para motoristas: viagens, checklists, abastecimentos, reportes |
 | Finance | Receitas, despesas, fluxo de caixa, centro de custos, fechamento mensal |
-| Inventory | Produtos, movimentações (entrada/saída/transferência), saldo em tempo real |
-| Maintenance | Preventivas e corretivas com histórico por veículo |
-| FuelLogs | Abastecimentos, consumo médio, lembretes configuráveis |
-| Notifications | Sistema de notificações in-app com SignalR |
+| Inventory | Produtos, movimentações (entrada/saída/transferência), controle de estoque |
+| Maintenance | Manutenções preventivas e corretivas com histórico por veículo |
+| FuelLogs | Registro de abastecimentos, consumo médio, lembretes configuráveis |
+| Notifications | Notificações in-app com SignalR (alertas de estoque, documentos, problemas) |
 
 ## Como Rodar
 
