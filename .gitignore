@@ -111,6 +111,12 @@ desktop.ini
 # ---- Redis ----
 dump.rdb
 
+# ---- SSL / Certificates (NEVER commit private keys) ----
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
+!nginx/ssl/.gitkeep
+
 # ---- Misc ----
 .vscode/settings.json
 *.bak
