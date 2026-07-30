@@ -1,228 +1,138 @@
 # Baby Turismo
 
-Sistema profissional de gestão de frota para empresas de transporte rodoviário de passageiros.
+Sistema SaaS multi-tenant para gestão de frota, motoristas, viagens, manutenções e operações financeiras de empresas de transporte rodoviário de passageiros.
 
-![Status](https://img.shields.io/badge/status-production-green)
-![License](https://img.shields.io/badge/license-proprietary-red)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+![Redis](https://img.shields.io/badge/Redis-7.2-DC382D)
 
-## Sobre
+## Stack
 
-Baby Turismo é uma plataforma SaaS multi-tenant desenvolvida para centralizar toda a operação de empresas de transporte em um único ambiente. O sistema elimina planilhas, reduz falhas operacionais, automatiza processos e fornece indicadores estratégicos em tempo real.
-
-### Público-alvo
-
-Empresas de transporte rodoviário de passageiros que precisam gerenciar frota, motoristas, viagens, manutenções e operações financeiras de forma integrada.
-
-## Funcionalidades
-
-### Gestão Operacional
-- **Motoristas** - Cadastro, CNH, disponibilidade, histórico de viagens
-- **Veículos** - Frota, documentação, vencimentos, alertas automáticos
-- **Viagens** - Agenda, checklists operacionais, observações, status em tempo real
-- **Manutenções** - Preventivas e corretivas com histórico completo
-- **Abastecimentos** - Registro de combustível, consumo médio por veículo
-
-### Gestão Financeira
-- **Receitas e Despesas** - Lançamentos categorizados
-- **Fluxo de Caixa** - Visão consolidada por período
-- **Centro de Custos** - Rateio e acompanhamento por unidade
-- **Fechamento Mensal** - Controle de meses fiscais
-
-### Gestão de Estoque
-- **Produtos** - Cadastro e categorização
-- **Movimentações** - Entradas, saídas e transferências
-- **Saldo** - Controle de estoque em tempo real
-
-### Analytics
-- **Dashboards** - KPIs personalizáveis com gráficos interativos
-- **Relatórios** - Exportação em PDF, Excel e CSV
-- **Indicadores** - Métricas operacionais e financeiras
-
-### Segurança e Infraestrutura
-- **Multi-Tenant** - Isolamento completo entre empresas
-- **RBAC** - Controle de acesso baseado em perfis (Admin, Gestor, Motorista)
-- **Auditoria** - Rastreamento completo de todas as operações
-- **Autenticação** - JWT com Refresh Tokens
-
-## Stack Tecnológica
-
-### Backend
-- ASP.NET Core 10 (C#)
-- Entity Framework Core + PostgreSQL
-- Clean Architecture + Domain-Driven Design
-- CQRS com MediatR
-- Redis para cache
-- FluentValidation
-- Serilog para logs estruturados
-
-### Frontend
-- React 18 + TypeScript
-- Vite
-- Tailwind CSS + shadcn/ui
-- TanStack Query
-- Apache ECharts + Recharts
-
-### Infraestrutura
-- Docker + Docker Compose
-- Nginx (reverse proxy)
-- Supabase (PostgreSQL + Storage)
+| Camada | Tecnologias |
+|--------|------------|
+| **Backend** | ASP.NET Core 10, EF Core, CQRS + MediatR, FluentValidation, Serilog, SignalR |
+| **Frontend** | React 19, TypeScript 6, Vite 8, TanStack Query, Zustand, Tailwind CSS, shadcn/ui, Recharts, ECharts |
+| **Database** | PostgreSQL 16 (Supabase), Redis 7.2 |
+| **Infra** | Docker Compose, Nginx (reverse proxy + SSL), GitHub Actions |
+| **Deploy** | Frontend → Vercel · API → Render · DB → Supabase |
 
 ## Arquitetura
 
-O projeto segue **Clean Architecture** com **Domain-Driven Design**:
+Clean Architecture + Domain-Driven Design com separação em 5 camadas:
 
-```
-─────────────────────────────────────────┐
-│         Presentation Layer              │
-│      (React + TypeScript)               │
-└────────────────┬────────────────────────┘
-                 │
-────────────────▼────────────────────────┐
-│           API Layer                     │
-│    (ASP.NET Core + JWT + RBAC)          │
-└────────────────┬────────────────────────┘
-                 │
-────────────────▼────────────────────────┐
-│       Application Layer                 │
-│    (CQRS + MediatR + Validators)        │
-└────────────────┬────────────────────────┘
-                 │
-────────────────▼────────────────────────┐
-│         Domain Layer                    │
-│  (Entities + Value Objects + Events)    │
-────────────────┬────────────────────────┘
-                 │
-┌────────────────▼────────────────────────
-│      Infrastructure Layer               │
-│  (EF Core + Redis + Storage + External) │
-─────────────────────────────────────────┘
+```mermaid
+graph TD
+    A[React 19 + TypeScript] -->|HTTP / SignalR| B[ASP.NET Core 10 API]
+    B -->|CQRS + MediatR| C[Application Layer]
+    C -->|Domain Events + Result Pattern| D[Domain Layer]
+    D -->|Entities + Value Objects + Aggregates| D
+    C -->|IRepository| E[Infrastructure Layer]
+    E -->|EF Core| F[(PostgreSQL)]
+    E -->|StackExchange.Redis| G[(Redis)]
+    E -->|Supabase SDK| H[Storage]
+    B -->|JWT + RBAC| I[Auth Middleware]
+    B -->|Tenant Resolver| J[Multi-Tenant Isolation]
 ```
 
-## Estrutura do Projeto
+### Padrões aplicados
+
+- **CQRS** — Commands e Queries separados via MediatR
+- **Result Pattern** — Erros tipados sem exceptions para fluxo de negócio
+- **Value Objects** — `Cpf`, `Email`, `Plate` com validação embutida
+- **Domain Events** — `AggregateRoot` com eventos propagados via MediatR
+- **Unit of Work** — `UnitOfWork` + `Repository<T>` com interceptores (auditoria, RLS)
+- **Multi-Tenant** — Middleware resolve tenant por request + RLS no PostgreSQL
+- **Real-time** — SignalR `FleetHub` com grupos por tenant
+- **Background Jobs** — Alertas de documentos vencidos e lembretes de abastecimento
+
+## Estrutura
 
 ```
-Baby-Turismo/
+BabyC/
 ├── backend/
 │   ├── src/
-│   │   ├── BabyTurismo.Api/           # Controllers, Middleware, Services
-│   │   ├── BabyTurismo.Application/   # Commands, Queries, Handlers
-│   │   ├── BabyTurismo.Domain/        # Entities, Value Objects, Events
-│   │   ├── BabyTurismo.Infrastructure/# EF Core, Redis, External Services
-│   │   └── BabyTurismo.Shared/        # DTOs, Results, Common
+│   │   ├── BabyTurismo.Api/            # Controllers, Middleware, SignalR
+│   │   ├── BabyTurismo.Application/    # CQRS Handlers, Validators, Services
+│   │   ├── BabyTurismo.Domain/         # Entities, Value Objects, Events
+│   │   ├── BabyTurismo.Infrastructure/ # EF Core, Redis, Background Jobs
+│   │   └── BabyTurismo.Shared/        # Result, PagedResult, DTOs
 │   └── tests/
-│       └── BabyTurismo.Tests/         # Unit Tests (xUnit)
+│       └── BabyTurismo.Tests/         # xUnit (Auth, Fleet, Operations)
 ├── frontend/
 │   └── src/
-│       ├── components/                # UI Components
-│       ├── pages/                     # Page Components
-│       ├── services/                  # API Services
-│       ├── store/                     # State Management
-│       ├── hooks/                     # Custom Hooks
-│       └── types/                     # TypeScript Types
-├── nginx/                             # Nginx Configuration
-└── docker-compose.yml                 # Docker Orchestration
+│       ├── components/                 # Layout + shared UI
+│       ├── pages/                      # Dashboard, Fleet, Trips, Drivers, Finance, Inventory, Maintenance
+│       ├── services/                   # Axios + TanStack Query client
+│       ├── store/                      # Zustand (Auth, Theme)
+│       ├── hooks/                      # SignalR hook
+│       └── types/                      # TypeScript types
+├── nginx/                              # Reverse proxy + SSL
+└── docker-compose.yml                  # API + Frontend + PostgreSQL + Redis + Nginx
 ```
 
-## Execução Local
+## Módulos
 
-### Pré-requisitos
-- Docker e Docker Compose
-- .NET 10 SDK (desenvolvimento)
-- Node.js 22+ (desenvolvimento)
+| Módulo | Descrição |
+|--------|-----------|
+| Auth | JWT com Refresh Tokens, RBAC (Admin, Gestor, Motorista), seed de admins |
+| Dashboard | KPIs operacionais e financeiros, gráficos Recharts/ECharts, alertas |
+| Drivers | Cadastro, CNH, disponibilidade, portal do motorista |
+| Vehicles | Frota, documentação (ANTT/ARTESP/Seguro/Licenciamento), alertas de vencimento |
+| Trips | Agenda, checklists operacionais, status em tempo real |
+| Finance | Receitas, despesas, fluxo de caixa, centro de custos, fechamento mensal |
+| Inventory | Produtos, movimentações (entrada/saída/transferência), saldo em tempo real |
+| Maintenance | Preventivas e corretivas com histórico por veículo |
+| FuelLogs | Abastecimentos, consumo médio, lembretes configuráveis |
+| Notifications | Sistema de notificações in-app com SignalR |
 
-### Setup
+## Como Rodar
+
+### Com Docker (recomendado)
 
 ```bash
-# 1. Clonar o repositório
 git clone https://github.com/DerickDutraDev/Baby-Turismo.git
 cd Baby-Turismo
-
-# 2. Configurar variáveis de ambiente
 cp .env.example .env
-# Edite .env com suas configurações (database, JWT, Redis)
-
-# 3. Executar com Docker
+# edite .env com suas configurações
 docker compose up -d
 ```
 
-### Endpoints
-- **Frontend**: http://localhost
-- **API**: http://localhost:5000
-- **Swagger**: http://localhost:5000/swagger
-- **PostgreSQL**: localhost:5432
-- **Redis**: localhost:6379
+| Serviço | URL |
+|---------|-----|
+| Frontend | `http://localhost` |
+| API | `http://localhost:5000` |
+| Swagger | `http://localhost:5000/swagger` |
+| PostgreSQL | `localhost:5432` |
+| Redis | `localhost:6379` |
 
 ### Desenvolvimento
 
 ```bash
 # Backend
-cd backend
-dotnet restore
-dotnet run
+cd backend && dotnet restore && dotnet run
 
 # Frontend
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-### Testes
+## Testes
 
 ```bash
-cd backend
-dotnet test
+cd backend && dotnet test
 ```
 
-**Cobertura:**
-- Autenticação (Login, Logout, Refresh Token)
-- Motoristas (CRUD, Disponibilidade)
-- Veículos (CRUD, Atribuição)
-- Viagens (Criação, Início, Conclusão, Cancelamento)
-
-## Módulos do Sistema
-
-| Módulo | Descrição |
-|--------|-----------|
-| Auth | Autenticação JWT, RBAC, Refresh Tokens |
-| Drivers | Gestão de motoristas, CNH, disponibilidade |
-| Vehicles | Frota, documentação, alertas |
-| Trips | Viagens, checklists, agenda |
-| Finance | Receitas, despesas, fluxo de caixa |
-| Inventory | Produtos, movimentações, estoque |
-| Maintenances | Manutenções preventivas/corretivas |
-| FuelLogs | Abastecimentos, consumo médio |
-| Dashboard | KPIs, gráficos, relatórios |
+Cobertura: autenticação (login/logout/refresh), motoristas (CRUD/disponibilidade), veículos (CRUD/atribuição), viagens (ciclo completo).
 
 ## Deploy
 
-### Produção
-- **Frontend**: Vercel
-- **Backend**: Render
-- **Database**: Supabase PostgreSQL
-- **Storage**: Supabase Storage
-
-### Variáveis de Ambiente
-
-Consulte `.env.example` para a lista completa de variáveis necessárias.
-
-## Integrações Futuras
-
-- Google Maps API
-- WhatsApp Business
-- Push Notifications
-- OCR para documentos
-- Aplicativo Mobile
-- GPS e Telemetria
-
-## Licença
-
-Projeto proprietário. Todos os direitos reservados.
+- **Frontend**: Vercel (build automático via `vercel.json`)
+- **API**: Render (Docker image via `render.yaml`)
+- **Database**: Supabase (PostgreSQL + Storage)
+- **CI**: Health checks + Docker multi-stage builds
 
 ## Autor
 
-**Derick Dutra**
-- GitHub: [@DerickDutraDev](https://github.com/DerickDutraDev)
-
----
-
-**Desenvolvido com foco em qualidade, escalabilidade e manutenibilidade.**
+**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev)
