@@ -1,105 +1,108 @@
-# Baby Turismo - Fleet Management System
+# Baby Turismo
 
-Sistema profissional de gestão de frota para empresas de transporte.
+Sistema profissional de gestão de frota para empresas de transporte rodoviário de passageiros.
 
-![Baby Turismo](https://img.shields.io/badge/status-production-green)
+![Status](https://img.shields.io/badge/status-production-green)
 ![License](https://img.shields.io/badge/license-proprietary-red)
 
-## Sobre o Projeto
+## Sobre
 
-Baby Turismo é uma plataforma web moderna desenvolvida para centralizar toda a operação de empresas de transporte em um único ambiente. O sistema elimina planilhas, reduz falhas operacionais, automatiza processos e fornece indicadores estratégicos em tempo real.
+Baby Turismo é uma plataforma SaaS multi-tenant desenvolvida para centralizar toda a operação de empresas de transporte em um único ambiente. O sistema elimina planilhas, reduz falhas operacionais, automatiza processos e fornece indicadores estratégicos em tempo real.
 
-### Swagger API
+### Público-alvo
 
-Documentação interativa completa com **17 módulos** e **100+ endpoints**:
+Empresas de transporte rodoviário de passageiros que precisam gerenciar frota, motoristas, viagens, manutenções e operações financeiras de forma integrada.
 
-![BabyTurismo Swagger Overview](docs/swagger-endpoints.png)
+## Funcionalidades
 
-*Visão geral dos módulos: Auth, Drivers, Vehicles, Trips, Finance, Stock, Maintenances, FuelLogs, Dashboard e mais.*
+### Gestão Operacional
+- **Motoristas** - Cadastro, CNH, disponibilidade, histórico de viagens
+- **Veículos** - Frota, documentação, vencimentos, alertas automáticos
+- **Viagens** - Agenda, checklists operacionais, observações, status em tempo real
+- **Manutenções** - Preventivas e corretivas com histórico completo
+- **Abastecimentos** - Registro de combustível, consumo médio por veículo
 
-## Principais Funcionalidades
+### Gestão Financeira
+- **Receitas e Despesas** - Lançamentos categorizados
+- **Fluxo de Caixa** - Visão consolidada por período
+- **Centro de Custos** - Rateio e acompanhamento por unidade
+- **Fechamento Mensal** - Controle de meses fiscais
 
-- **Gestão de Motoristas** - Cadastro, CNH, disponibilidade e histórico
-- **Gestão de Veículos** - Frota, documentação, alertas de combustível
-- **Controle de Viagens** - Agenda, checklists, observações operacionais
-- **Gestão Financeira** - Receitas, despesas, fluxo de caixa, centro de custos
-- **Controle de Estoque** - Produtos, movimentações, fornecedores
-- **Manutenções** - Preventivas e corretivas com histórico
-- **Abastecimentos** - Registro de combustível e consumo médio
-- **Dashboards Analíticos** - KPIs personalizáveis com gráficos interativos
-- **Sistema Multi-Tenant** - Isolamento completo entre empresas
-- **Auditoria Completa** - Rastreamento de todas as operações
+### Gestão de Estoque
+- **Produtos** - Cadastro e categorização
+- **Movimentações** - Entradas, saídas e transferências
+- **Saldo** - Controle de estoque em tempo real
+
+### Analytics
+- **Dashboards** - KPIs personalizáveis com gráficos interativos
+- **Relatórios** - Exportação em PDF, Excel e CSV
+- **Indicadores** - Métricas operacionais e financeiras
+
+### Segurança e Infraestrutura
+- **Multi-Tenant** - Isolamento completo entre empresas
+- **RBAC** - Controle de acesso baseado em perfis (Admin, Gestor, Motorista)
+- **Auditoria** - Rastreamento completo de todas as operações
+- **Autenticação** - JWT com Refresh Tokens
 
 ## Stack Tecnológica
 
 ### Backend
-- **ASP.NET Core 9** com C#
-- **Entity Framework Core** para ORM
-- **PostgreSQL** (Supabase) como banco de dados
-- **Redis** para cache
-- **Clean Architecture** com Domain-Driven Design
-- **CQRS** com MediatR
-- **JWT** para autenticação
-- **FluentValidation** para validações
-- **Serilog** para logs estruturados
+- ASP.NET Core 10 (C#)
+- Entity Framework Core + PostgreSQL
+- Clean Architecture + Domain-Driven Design
+- CQRS com MediatR
+- Redis para cache
+- FluentValidation
+- Serilog para logs estruturados
 
 ### Frontend
-- **React 18** com TypeScript
-- **Vite** como build tool
-- **Tailwind CSS** + **shadcn/ui** para UI
-- **TanStack Query** para data fetching
-- **React Hook Form** + **Zod** para formulários
-- **Apache ECharts** + **Recharts** para gráficos
-- **React Grid Layout** para dashboards personalizáveis
-- **Framer Motion** para animações
+- React 18 + TypeScript
+- Vite
+- Tailwind CSS + shadcn/ui
+- TanStack Query
+- Apache ECharts + Recharts
 
 ### Infraestrutura
-- **Docker** + **Docker Compose** para containers
-- **Nginx** como reverse proxy
-- **Supabase Storage** para arquivos
+- Docker + Docker Compose
+- Nginx (reverse proxy)
+- Supabase (PostgreSQL + Storage)
 
 ## Arquitetura
 
-O projeto segue os princípios de **Clean Architecture** com **Domain-Driven Design**:
+O projeto segue **Clean Architecture** com **Domain-Driven Design**:
 
 ```
-┌─────────────────────────────────────────┐
+─────────────────────────────────────────┐
 │         Presentation Layer              │
 │      (React + TypeScript)               │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
+────────────────▼────────────────────────┐
 │           API Layer                     │
 │    (ASP.NET Core + JWT + RBAC)          │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
+────────────────▼────────────────────────┐
 │       Application Layer                 │
 │    (CQRS + MediatR + Validators)        │
 └────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
+────────────────▼────────────────────────┐
 │         Domain Layer                    │
 │  (Entities + Value Objects + Events)    │
-└────────────────┬────────────────────────┘
+────────────────┬────────────────────────┘
                  │
-┌────────────────▼────────────────────────┐
+┌────────────────▼────────────────────────
 │      Infrastructure Layer               │
 │  (EF Core + Redis + Storage + External) │
-└─────────────────────────────────────────┘
+─────────────────────────────────────────┘
 ```
-
-### API Endpoints
-
-![BabyTurismo Swagger Endpoints](docs/swagger-overview.png)
-
-*API documentada com Swagger/OpenAPI. Cada endpoint possui request/response models, validações e exemplos.*
 
 ## Estrutura do Projeto
 
 ```
-BabyC/
-├── backend/                    # API .NET
+Baby-Turismo/
+├── backend/
 │   ├── src/
 │   │   ├── BabyTurismo.Api/           # Controllers, Middleware, Services
 │   │   ├── BabyTurismo.Application/   # Commands, Queries, Handlers
@@ -108,129 +111,99 @@ BabyC/
 │   │   └── BabyTurismo.Shared/        # DTOs, Results, Common
 │   └── tests/
 │       └── BabyTurismo.Tests/         # Unit Tests (xUnit)
-├── frontend/                   # React Application
+├── frontend/
 │   └── src/
-│       ├── components/         # UI Components
-│       ├── pages/              # Page Components
-│       ├── services/           # API Services
-│       ├── store/              # State Management
-│       ├── hooks/              # Custom Hooks
-│       └── types/              # TypeScript Types
-├── nginx/                      # Nginx Configuration
-├── docker-compose.yml          # Docker Orchestration
-└── .env.example                # Environment Variables Template
+│       ├── components/                # UI Components
+│       ├── pages/                     # Page Components
+│       ├── services/                  # API Services
+│       ├── store/                     # State Management
+│       ├── hooks/                     # Custom Hooks
+│       └── types/                     # TypeScript Types
+├── nginx/                             # Nginx Configuration
+└── docker-compose.yml                 # Docker Orchestration
 ```
 
-## Pré-requisitos
+## Execução Local
 
+### Pré-requisitos
 - Docker e Docker Compose
-- .NET 9 SDK (para desenvolvimento)
-- Node.js 18+ (para desenvolvimento)
+- .NET 10 SDK (desenvolvimento)
+- Node.js 22+ (desenvolvimento)
 
-## Instalação e Execução
-
-### 1. Configurar Variáveis de Ambiente
+### Setup
 
 ```bash
+# 1. Clonar o repositório
+git clone https://github.com/DerickDutraDev/Baby-Turismo.git
+cd Baby-Turismo
+
+# 2. Configurar variáveis de ambiente
 cp .env.example .env
+# Edite .env com suas configurações (database, JWT, Redis)
+
+# 3. Executar com Docker
+docker compose up -d
 ```
 
-Edite o arquivo `.env` com suas configurações:
-- Database credentials (Supabase PostgreSQL)
-- JWT secrets
-- Redis connection
-- CORS origins
+### Endpoints
+- **Frontend**: http://localhost
+- **API**: http://localhost:5000
+- **Swagger**: http://localhost:5000/swagger
+- **PostgreSQL**: localhost:5432
+- **Redis**: localhost:6379
 
-### 2. Executar com Docker
+### Desenvolvimento
 
 ```bash
-docker-compose up -d
-```
-
-O sistema estará disponível em:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5000
-- **Swagger UI**: http://localhost:5000/swagger — documentação interativa para testar todos os endpoints
-
-### 3. Executar em Modo Desenvolvimento
-
-**Backend:**
-```bash
+# Backend
 cd backend
+dotnet restore
 dotnet run
-```
 
-**Frontend:**
-```bash
+# Frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-## Testes
-
-O projeto possui uma suite completa de testes unitários:
+### Testes
 
 ```bash
 cd backend
 dotnet test
 ```
 
-### Cobertura de Testes
-
-- **Auth** - Login, Logout, Refresh Token
-- **Drivers** - Criação, Atualização, Disponibilidade
-- **Vehicles** - Criação, Atribuição, Alertas
-- **Trips** - Criação, Início, Conclusão, Cancelamento
+**Cobertura:**
+- Autenticação (Login, Logout, Refresh Token)
+- Motoristas (CRUD, Disponibilidade)
+- Veículos (CRUD, Atribuição)
+- Viagens (Criação, Início, Conclusão, Cancelamento)
 
 ## Módulos do Sistema
 
-### Core
-- Usuários e Autenticação
-- Permissões (RBAC)
-- Auditoria
-- Multi-Tenancy
+| Módulo | Descrição |
+|--------|-----------|
+| Auth | Autenticação JWT, RBAC, Refresh Tokens |
+| Drivers | Gestão de motoristas, CNH, disponibilidade |
+| Vehicles | Frota, documentação, alertas |
+| Trips | Viagens, checklists, agenda |
+| Finance | Receitas, despesas, fluxo de caixa |
+| Inventory | Produtos, movimentações, estoque |
+| Maintenances | Manutenções preventivas/corretivas |
+| FuelLogs | Abastecimentos, consumo médio |
+| Dashboard | KPIs, gráficos, relatórios |
 
-### Operacional
-- Motoristas
-- Veículos
-- Agenda
-- Viagens
-- Checklists
+## Deploy
 
-### Frota
-- Manutenções
-- Abastecimentos
-- Documentos
-- Alertas de Combustível
+### Produção
+- **Frontend**: Vercel
+- **Backend**: Render
+- **Database**: Supabase PostgreSQL
+- **Storage**: Supabase Storage
 
-### Financeiro
-- Receitas e Despesas
-- Fluxo de Caixa
-- Centro de Custos
-- Categorias
+### Variáveis de Ambiente
 
-### Estoque
-- Produtos
-- Movimentações
-- Fornecedores
-
-### Analytics
-- Dashboards Personalizáveis
-- KPIs
-- Relatórios
-- Exportação (PDF, Excel, CSV)
-
-## Segurança
-
-- **JWT Authentication** com Refresh Tokens
-- **RBAC** (Role-Based Access Control)
-- **Multi-tenant isolation** completo
-- **Audit logs** de todas as operações
-- **Rate limiting** na API
-- **CORS** configurável
-- **BCrypt** para senhas
-- **HTTPS** obrigatório em produção
+Consulte `.env.example` para a lista completa de variáveis necessárias.
 
 ## Integrações Futuras
 
@@ -241,25 +214,14 @@ dotnet test
 - Aplicativo Mobile
 - GPS e Telemetria
 
-## Deploy
-
-### Produção
-
-O sistema está configurado para deploy em:
-- **Frontend**: Vercel
-- **Backend**: Render
-- **Database**: Supabase
-- **Storage**: Supabase Storage
-
-Consulte o arquivo `.env.example` para as variáveis de ambiente necessárias.
-
 ## Licença
 
 Projeto proprietário. Todos os direitos reservados.
 
-## Contato
+## Autor
 
-Para mais informações sobre o projeto, entre em contato.
+**Derick Dutra**
+- GitHub: [@DerickDutraDev](https://github.com/DerickDutraDev)
 
 ---
 
