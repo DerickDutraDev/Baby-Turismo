@@ -158,4 +158,4 @@ Coverage: authentication (login/logout/refresh), drivers (CRUD/availability), ve
 
 ## Author
 
-**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev) · [LinkedIn](https://www.linkedin.com/in/derickdutra)
+**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev) · [LinkedIn](https://www.linkedin.com/in/derick-dutra)

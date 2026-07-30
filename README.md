@@ -158,4 +158,4 @@ Cobertura: autenticação (login/logout/refresh), motoristas (CRUD/disponibilida
 
 ## Autor
 
-**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev)
+**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev) · [LinkedIn](https://www.linkedin.com/in/derick-dutra)
