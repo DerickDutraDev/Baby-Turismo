@@ -14,10 +14,6 @@ interface FuelLogDto {
   totalCost: number;
 }
 
-interface EnrichedLog extends FuelLogDto {
-  kmDriven: number | null;
-  costPerKm: number | null;
-}
 
 export default function FuelReport() {
   const { data, isLoading } = useQuery<{ items: FuelLogDto[], totalCount: number }>({
@@ -38,7 +34,6 @@ export default function FuelReport() {
     for (const arr of Object.values(byVehicle)) {
       arr.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
-    const idx = new Map<string, number>();
     return raw.map(log => {
       const arr = byVehicle[log.vehicleId];
       const i = arr.indexOf(log);

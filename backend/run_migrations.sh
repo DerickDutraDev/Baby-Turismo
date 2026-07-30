@@ -5,7 +5,7 @@ dotnet tool install --global dotnet-ef
 export PATH="$PATH:/root/.dotnet/tools"
 
 echo "Restoring packages..."
-dotnet restore FleetOS.sln
+dotnet restore BabyTurismo.sln
 
 echo "Running migrations..."
-dotnet ef migrations add InitialCore --project src/FleetOS.Infrastructure --startup-project src/FleetOS.Api
+dotnet ef migrations add InitialCore --project src/BabyTurismo.Infrastructure --startup-project src/BabyTurismo.Api

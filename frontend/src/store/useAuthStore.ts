@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>()(
       }
     }),
     {
-      name: 'fleetos-auth-storage',
+      name: 'babyturismo-auth-storage',
       storage: createJSONStorage(() => sessionStorage),
     }
   )

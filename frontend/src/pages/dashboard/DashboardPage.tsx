@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../services/api';
-import { Truck, AlertTriangle, ArrowDownRight, Settings, AlertCircle, CheckCircle, Clock, XCircle, Eye, DollarSign } from 'lucide-react';
+import { Truck, AlertTriangle, ArrowDownRight, Settings, AlertCircle, CheckCircle, Clock, XCircle, Eye } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LabelList, PieChart, Pie, Cell } from 'recharts';
 import BaseModal from '../../components/shared/BaseModal';
 import './Dashboard.css';

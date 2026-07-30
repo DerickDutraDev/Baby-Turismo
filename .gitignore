@@ -116,3 +116,17 @@ dump.rdb
 *.bak
 *.tmp
 *.temp
+
+# ---- AI/Agent Tools ----
+.opencode/
+.planning/
+FOUNDATION/
+DOMAIN/
+FLEET/
+DATABASE/
+IMPLEMENTATION_ROADMAP.md
+IMPLEMENTATION_SUMMARY.md
+MODULE_TEMPLATE.md
+SECURITY-AUDIT.md
+UI-REVIEW.md
+*.agent.md

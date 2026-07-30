@@ -8,7 +8,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
 
-    container_name: fleetos_api
+    container_name: babyturismo_api
 
     restart: unless-stopped
 
@@ -22,8 +22,8 @@ services:
       - ConnectionStrings__DefaultConnection=${DATABASE_URL}
 
       - Jwt__Secret=${JWT_SECRET}
-      - Jwt__Issuer=${JWT_ISSUER:-fleetos-api}
-      - Jwt__Audience=${JWT_AUDIENCE:-fleetos-clients}
+      - Jwt__Issuer=${JWT_ISSUER:-babyturismo-api}
+      - Jwt__Audience=${JWT_AUDIENCE:-babyturismo-clients}
       - Jwt__AccessExpiryMinutes=${JWT_ACCESS_EXPIRY_MINUTES:-60}
       - Jwt__RefreshExpiryDays=${JWT_REFRESH_EXPIRY_DAYS:-30}
 
@@ -32,7 +32,7 @@ services:
 
       - Supabase__Url=${SUPABASE_URL}
       - Supabase__ServiceKey=${SUPABASE_SERVICE_KEY}
-      - Supabase__StorageBucket=${SUPABASE_STORAGE_BUCKET:-fleetos}
+      - Supabase__StorageBucket=${SUPABASE_STORAGE_BUCKET:-babyturismo}
 
       - Cors__AllowedOrigins=${CORS_ALLOWED_ORIGINS}
 
@@ -49,8 +49,14 @@ services:
       retries: 3
       start_period: 40s
 
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
     networks:
-      - fleetos_network
+      - babyturismo_network
 
     volumes:
       - api_logs:/app/logs
@@ -65,15 +71,45 @@ services:
 
       args:
         - VITE_API_URL=${VITE_API_URL:-http://localhost:5000}
-        - VITE_APP_NAME=${VITE_APP_NAME:-FleetOS}
+        - VITE_APP_NAME=${VITE_APP_NAME:-Baby Turismo}
         - VITE_APP_VERSION=${VITE_APP_VERSION:-1.0.0}
 
-    container_name: fleetos_frontend
+    container_name: babyturismo_frontend
 
     restart: unless-stopped
 
     networks:
-      - fleetos_network
+      - babyturismo_network
+
+  # ─────────────────────────────────────────────────────────────────
+  # PostgreSQL
+  # ─────────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+
+    container_name: babyturismo_db
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-baby_turismo}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-baby_turismo_2026}
+
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - babyturismo_network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ─────────────────────────────────────────────────────────────────
   # Redis
@@ -81,7 +117,7 @@ services:
   redis:
     image: redis:7.2-alpine
 
-    container_name: fleetos_redis
+    container_name: babyturismo_redis
 
     restart: unless-stopped
 
@@ -94,7 +130,7 @@ services:
       - redis_data:/data
 
     networks:
-      - fleetos_network
+      - babyturismo_network
 
     healthcheck:
       test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secret}", "ping" ]
@@ -109,7 +145,7 @@ services:
   nginx:
     image: nginx:1.25-alpine
 
-    container_name: fleetos_nginx
+    container_name: babyturismo_nginx
 
     restart: unless-stopped
 
@@ -126,16 +162,19 @@ services:
       - frontend
 
     networks:
-      - fleetos_network
+      - babyturismo_network
 
 networks:
 
-  fleetos_network:
+  babyturismo_network:
     driver: bridge
 
 volumes:
 
   redis_data:
+    driver: local
+
+  postgres_data:
     driver: local
 
   api_logs:

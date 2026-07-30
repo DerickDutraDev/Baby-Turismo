@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../../services/api';
-import { Plus, Search, Edit2, Eye, Trash2, Loader2, Truck, User, Tag, Hash, Box, FileText, Calendar } from 'lucide-react';
+import { Plus, Search, Edit2, Eye, Trash2, Loader2, Truck, User, Tag, Box, FileText } from 'lucide-react';
 import VehicleFormModal from './VehicleFormModal';
 import BaseModal from '../../../components/shared/BaseModal';
 

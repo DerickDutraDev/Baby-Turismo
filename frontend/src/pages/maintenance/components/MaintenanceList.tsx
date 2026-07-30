@@ -31,7 +31,7 @@ export default function MaintenanceList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMaintenance, setEditMaintenance] = useState<MaintenanceDto | undefined>(undefined);
-  const [openStatusId, setOpenStatusId] = useState<string | null>(null);
+
   const [paidIds, setPaidIds] = useState<Set<string>>(() => {
     try { return new Set(JSON.parse(localStorage.getItem('paidIds') || '[]')); } catch { return new Set(); }
   });

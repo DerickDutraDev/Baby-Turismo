@@ -35,7 +35,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: 'fleetos-theme',
+      name: 'babyturismo-theme',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (state?.mode) applyTheme(state.mode);

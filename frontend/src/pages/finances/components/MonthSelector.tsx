@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../../services/api';
-import { Calendar, Plus, Lock, Unlock, Play } from 'lucide-react';
+import { Calendar, Plus, Lock, Play } from 'lucide-react';
 import { useState } from 'react';
 import OpenMonthModal from './OpenMonthModal';
 import CloseMonthModal from './CloseMonthModal';

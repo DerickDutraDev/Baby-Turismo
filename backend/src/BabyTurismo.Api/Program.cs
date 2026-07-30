@@ -1,0 +1,106 @@
+using BabyTurismo.Api.Extensions;
+using BabyTurismo.Application;
+using BabyTurismo.Infrastructure;
+using BabyTurismo.Infrastructure.Hubs;
+using BabyTurismo.Infrastructure.Persistence;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+try
+{
+    Log.Information("Starting Baby Turismo API...");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog((ctx, lc) =>
+    {
+        lc.ReadFrom.Configuration(ctx.Configuration)
+          .Enrich.FromLogContext()
+          .Enrich.WithMachineName()
+          .Enrich.WithThreadId()
+          .WriteTo.Console();
+
+        // File logging only in non-production (Render has ephemeral disk)
+        if (!ctx.HostingEnvironment.IsProduction())
+        {
+            lc.WriteTo.File("logs/babyturismo-.log",
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 30);
+        }
+    });
+
+    builder.Services
+        .AddApiServices(builder.Configuration)
+        .AddAuthServices(builder.Configuration)
+        .AddApplicationServices()
+        .AddInfrastructureServices(builder.Configuration);
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    builder.Services.AddSignalR().AddHubOptions<FleetHub>(options =>
+    {
+        options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        options.EnableDetailedErrors = true;
+    });
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging(opts =>
+    {
+        opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000}ms";
+    });
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Baby Turismo API v1");
+            c.RoutePrefix = "swagger";
+        });
+    }
+
+    // Only redirect HTTPS in local dev — in Docker/Prod, TLS is terminated at Nginx.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection();
+    }
+    app.UseCors("AllowedOrigins");
+    app.UseWebSockets(new WebSocketOptions
+    {
+        KeepAliveInterval = TimeSpan.FromSeconds(30)
+    });
+
+    // SignalR and health must be before rate limiter to avoid WS upgrade being blocked
+    app.MapHub<FleetHub>("/hubs/fleet");
+    app.MapHealthChecks("/health");
+
+    app.UseRateLimiter();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseStaticFiles(); // Added for receipt uploads
+
+    app.UseCorrelationId();
+    app.UseTenantResolver();
+    app.UseGlobalExceptionHandler();
+
+    app.MapControllers();
+
+    await app.MigrateAndSeedAsync();
+
+    await app.RunAsync();
+    return 0;
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Baby Turismo API terminated unexpectedly.");
+    return 1;
+}
+finally
+{
+    Log.CloseAndFlush();
+}

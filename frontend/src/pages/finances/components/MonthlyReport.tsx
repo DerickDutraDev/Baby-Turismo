@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../services/api';
-import { Download, FileText, TrendingUp, TrendingDown, Landmark, Wallet } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface FinancialMonthDto {

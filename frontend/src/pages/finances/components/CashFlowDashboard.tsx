@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../services/api';
-import { DollarSign, TrendingUp, TrendingDown, Landmark, Wallet } from 'lucide-react';
+import { TrendingUp, TrendingDown, Landmark, Wallet } from 'lucide-react';
 import './CashFlowDashboard.css';
 
 interface CashFlowSummaryDto {

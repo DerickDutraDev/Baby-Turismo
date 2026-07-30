@@ -1,0 +1,27 @@
+using BabyTurismo.Domain.Finance;
+using BabyTurismo.Shared.Pagination;
+using BabyTurismo.Shared.Results;
+using MediatR;
+
+namespace BabyTurismo.Application.Finance.Queries;
+
+public sealed record GetCostCentersQuery() : IRequest<Result<IReadOnlyList<CostCenterDto>>>;
+public sealed record GetFinancialCategoriesQuery() : IRequest<Result<IReadOnlyList<FinancialCategoryDto>>>;
+public sealed record GetFinancialCategoryByIdQuery(Guid Id) : IRequest<Result<FinancialCategoryDto>>;
+public sealed record GetCostCenterByIdQuery(Guid Id) : IRequest<Result<CostCenterDto>>;
+
+public sealed record GetTransactionsQuery(
+    int Page,
+    int PageSize,
+    TransactionStatus? Status,
+    DateTime? StartDate,
+    DateTime? EndDate,
+    TransactionType? Type) : IRequest<Result<PagedResult<FinancialTransactionDto>>>;
+
+public sealed record GetFinancialMonthsQuery() : IRequest<Result<IReadOnlyList<FinancialMonthDto>>>;
+public sealed record GetOpenFinancialMonthQuery() : IRequest<Result<FinancialMonthDto?>>;
+public sealed record GetFinancialMonthReportQuery(Guid MonthId) : IRequest<Result<FinancialMonthReportDto>>;
+
+public sealed record GetCashFlowSummaryQuery(
+    DateTime? StartDate,
+    DateTime? EndDate) : IRequest<Result<CashFlowSummaryDto>>;

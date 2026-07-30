@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LineChart, Receipt, Settings, Droplets, FileText, Calendar } from 'lucide-react';
+import { LineChart, Receipt, Settings, Droplets, FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import './FinancesPage.css';

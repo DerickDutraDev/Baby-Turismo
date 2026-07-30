@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fleetos_api
+    container_name: babyturismo_api
     env_file: ../.env
     ports:
       - "5000:8080"
@@ -12,11 +12,11 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
 
-      ConnectionStrings__DefaultConnection: ${DATABASE_URL:-Host=db;Port=5432;Database=fleetos;Username=postgres;Password=postgres}
+      ConnectionStrings__DefaultConnection: ${DATABASE_URL:-Host=db;Port=5432;Database=babyturismo;Username=postgres;Password=postgres}
 
       Jwt__Secret: "${JWT_SECRET}"
-      Jwt__Issuer: "${JWT_ISSUER:-fleetos-api}"
-      Jwt__Audience: "${JWT_AUDIENCE:-fleetos-clients}"
+      Jwt__Issuer: "${JWT_ISSUER:-babyturismo-api}"
+      Jwt__Audience: "${JWT_AUDIENCE:-babyturismo-clients}"
       Jwt__AccessExpiryMinutes: "${JWT_ACCESS_EXPIRY_MINUTES:-60}"
       Jwt__RefreshExpiryDays: "${JWT_REFRESH_EXPIRY_DAYS:-7}"
 
@@ -37,12 +37,12 @@ services:
 
   db:
     image: postgres:15
-    container_name: fleetos_db
+    container_name: babyturismo_db
 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: fleetos
+      POSTGRES_DB: babyturismo
 
     ports:
       - "5432:5432"
@@ -54,7 +54,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: fleetos_redis
+    container_name: babyturismo_redis
 
     ports:
       - "6379:6379"
