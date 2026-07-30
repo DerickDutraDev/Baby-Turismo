@@ -1,8 +1,8 @@
 # Baby Turismo
 
-[English version](README.en.md) | [Versão em português](#baby-turismo)
+[Versão em português](README.md) | [English version](#baby-turismo)
 
-Sistema de gestão operacional desenvolvido para a Baby Turismo, empresa de transporte rodoviário de passageiros. Possui painel administrativo web para controle de frota, viagens, motoristas, financeiro e estoque, além de portal mobile para motoristas com checklists, abastecimentos e reportes em tempo real.
+Operational management system built for Baby Turismo, a passenger road transport company. Features a web admin panel for fleet, trips, drivers, finance, and inventory control, plus a mobile-first driver portal with checklists, fuel logs, and real-time issue reporting.
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
@@ -13,17 +13,17 @@ Sistema de gestão operacional desenvolvido para a Baby Turismo, empresa de tran
 
 ## Stack
 
-| Camada | Tecnologias |
-|--------|------------|
+| Layer | Technologies |
+|-------|-------------|
 | **Backend** | ASP.NET Core 10, EF Core, CQRS + MediatR, FluentValidation, Serilog, SignalR |
 | **Frontend** | React 19, TypeScript 6, Vite 8, TanStack Query, Zustand, Tailwind CSS, shadcn/ui, Recharts, ECharts |
 | **Database** | PostgreSQL 16 (Supabase), Redis 7.2 |
 | **Infra** | Docker Compose, Nginx (reverse proxy + SSL), GitHub Actions |
 | **Deploy** | Frontend → Vercel · API → Render · DB → Supabase |
 
-## Arquitetura
+## Architecture
 
-Clean Architecture + Domain-Driven Design com separação em 5 camadas:
+Clean Architecture + Domain-Driven Design with 5-layer separation:
 
 ```mermaid
 graph TD
@@ -39,18 +39,18 @@ graph TD
     B -->|Tenant Resolver| J[Multi-Tenant Isolation]
 ```
 
-### Padrões aplicados
+### Design Patterns
 
-- **CQRS** — Commands e Queries separados via MediatR
-- **Result Pattern** — Erros tipados sem exceptions para fluxo de negócio
-- **Value Objects** — `Cpf`, `Email`, `Plate` com validação embutida
-- **Domain Events** — `AggregateRoot` com eventos propagados via MediatR
-- **Unit of Work** — `UnitOfWork` + `Repository<T>` com interceptores (auditoria, RLS)
-- **Multi-Tenant** — Middleware resolve tenant por request + RLS no PostgreSQL
-- **Real-time** — SignalR `FleetHub` com grupos por tenant
-- **Background Jobs** — Alertas de documentos vencidos e lembretes de abastecimento
+- **CQRS** — Commands and Queries separated via MediatR
+- **Result Pattern** — Typed errors without exceptions for business flows
+- **Value Objects** — `Cpf`, `Email`, `Plate` with built-in validation
+- **Domain Events** — `AggregateRoot` with events propagated via MediatR
+- **Unit of Work** — `UnitOfWork` + `Repository<T>` with interceptors (auditing, RLS)
+- **Multi-Tenant** — Middleware resolves tenant per request + RLS in PostgreSQL
+- **Real-time** — SignalR `FleetHub` with tenant-based groups
+- **Background Jobs** — Document expiry alerts and fuel reminders
 
-## Estrutura
+## Structure
 
 ```
 BabyC/
@@ -75,25 +75,25 @@ BabyC/
 └── docker-compose.yml                  # API + Frontend + PostgreSQL + Redis + Nginx
 ```
 
-## Módulos
+## Modules
 
-| Módulo | Descrição |
-|--------|-----------|
-| Auth | JWT com Refresh Tokens, RBAC (Admin, Gestor, Motorista) |
-| Dashboard | KPIs operacionais e financeiros, gráficos Recharts/ECharts, alertas em tempo real |
-| Drivers | Cadastro de motoristas, CNH, disponibilidade, histórico |
-| Vehicles | Frota, documentação (ANTT/ARTESP/Seguro/Licenciamento), alertas de vencimento |
-| Trips | Agenda de viagens, checklists operacionais, controle de status |
-| Driver Portal | Portal mobile-first para motoristas: viagens, checklists, abastecimentos, reportes |
-| Finance | Receitas, despesas, fluxo de caixa, centro de custos, fechamento mensal |
-| Inventory | Produtos, movimentações (entrada/saída/transferência), controle de estoque |
-| Maintenance | Manutenções preventivas e corretivas com histórico por veículo |
-| FuelLogs | Registro de abastecimentos, consumo médio, lembretes configuráveis |
-| Notifications | Notificações in-app com SignalR (alertas de estoque, documentos, problemas) |
+| Module | Description |
+|--------|-------------|
+| Auth | JWT with Refresh Tokens, RBAC (Admin, Manager, Driver) |
+| Dashboard | Operational and financial KPIs, Recharts/ECharts graphs, real-time alerts |
+| Drivers | Driver registration, license (CNH), availability, history |
+| Vehicles | Fleet, documents (permits/insurance/licensing), expiry alerts |
+| Trips | Trip scheduling, operational checklists, status tracking |
+| Driver Portal | Mobile-first portal for drivers: trips, checklists, fuel logs, issue reports |
+| Finance | Revenue, expenses, cash flow, cost centers, monthly closing |
+| Inventory | Products, movements (in/out/transfer), stock control |
+| Maintenance | Preventive and corrective maintenance with vehicle history |
+| FuelLogs | Fuel records, average consumption, configurable reminders |
+| Notifications | In-app notifications via SignalR (stock alerts, documents, issues) |
 
-## Como Rodar
+## Getting Started
 
-### Com Docker (recomendado)
+### With Docker (recommended)
 
 ```bash
 git clone https://github.com/DerickDutraDev/Baby-Turismo.git
@@ -101,29 +101,29 @@ cd Baby-Turismo
 cp .env.example .env
 ```
 
-**Importante**: Edite o `.env` com suas credenciais **antes** de subir os containers:
+**Important**: Edit `.env` with your credentials **before** starting the containers:
 
 ```env
-# Credenciais do admin (usadas na primeira execução para criar o usuário inicial)
-SEED_SYSTEM_ADMIN_EMAIL=seuemail@gmail.com
-SEED_SYSTEM_ADMIN_PASSWORD=SuaSenhaForte123!
-SEED_TENANT_ADMIN_EMAIL=seuemail@gmail.com
-SEED_TENANT_ADMIN_PASSWORD=SuaSenhaForte123!
+# Admin credentials (used on first run to create the initial admin user)
+SEED_SYSTEM_ADMIN_EMAIL=youremail@gmail.com
+SEED_SYSTEM_ADMIN_PASSWORD=YourStrongPassword123!
+SEED_TENANT_ADMIN_EMAIL=youremail@gmail.com
+SEED_TENANT_ADMIN_PASSWORD=YourStrongPassword123!
 
-# Senhas dos serviços (gere senhas fortes)
-POSTGRES_PASSWORD=sua_senha_postgres
-REDIS_PASSWORD=sua_senha_redis
-JWT_SECRET=gere_um_secret_de_no_minimo_64_caracteres_aleatorios
-SUPABASE_SERVICE_KEY=sua_service_key_supabase
+# Service passwords (generate strong passwords)
+POSTGRES_PASSWORD=your_postgres_password
+REDIS_PASSWORD=your_redis_password
+JWT_SECRET=generate_a_random_secret_with_at_least_64_characters
+SUPABASE_SERVICE_KEY=your_supabase_service_key
 ```
 
-Após configurar, suba os containers:
+After configuring, start the containers:
 
 ```bash
 docker compose up -d
 ```
 
-| Serviço | URL |
+| Service | URL |
 |---------|-----|
 | Frontend | `http://localhost` |
 | API | `http://localhost:5000` |
@@ -131,7 +131,7 @@ docker compose up -d
 | PostgreSQL | `localhost:5432` |
 | Redis | `localhost:6379` |
 
-### Desenvolvimento
+### Development
 
 ```bash
 # Backend
@@ -141,21 +141,21 @@ cd backend && dotnet restore && dotnet run
 cd frontend && npm install && npm run dev
 ```
 
-## Testes
+## Tests
 
 ```bash
 cd backend && dotnet test
 ```
 
-Cobertura: autenticação (login/logout/refresh), motoristas (CRUD/disponibilidade), veículos (CRUD/atribuição), viagens (ciclo completo).
+Coverage: authentication (login/logout/refresh), drivers (CRUD/availability), vehicles (CRUD/assignment), trips (full lifecycle).
 
-## Deploy
+## Deployment
 
-- **Frontend**: Vercel (build automático via `vercel.json`)
+- **Frontend**: Vercel (auto-build via `vercel.json`)
 - **API**: Render (Docker image via `render.yaml`)
 - **Database**: Supabase (PostgreSQL + Storage)
 - **CI**: Health checks + Docker multi-stage builds
 
-## Autor
+## Author
 
-**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev)
+**Derick Dutra** — [GitHub](https://github.com/DerickDutraDev) · [LinkedIn](https://www.linkedin.com/in/derickdutra)
