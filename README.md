@@ -97,7 +97,27 @@ BabyC/
 git clone https://github.com/DerickDutraDev/Baby-Turismo.git
 cd Baby-Turismo
 cp .env.example .env
-# edite .env com suas configurações
+```
+
+**Importante**: Edite o `.env` com suas credenciais **antes** de subir os containers:
+
+```env
+# Credenciais do admin (usadas na primeira execução para criar o usuário inicial)
+SEED_SYSTEM_ADMIN_EMAIL=seuemail@gmail.com
+SEED_SYSTEM_ADMIN_PASSWORD=SuaSenhaForte123!
+SEED_TENANT_ADMIN_EMAIL=seuemail@gmail.com
+SEED_TENANT_ADMIN_PASSWORD=SuaSenhaForte123!
+
+# Senhas dos serviços (gere senhas fortes)
+POSTGRES_PASSWORD=sua_senha_postgres
+REDIS_PASSWORD=sua_senha_redis
+JWT_SECRET=gere_um_secret_de_no_minimo_64_caracteres_aleatorios
+SUPABASE_SERVICE_KEY=sua_service_key_supabase
+```
+
+Após configurar, suba os containers:
+
+```bash
 docker compose up -d
 ```
 
