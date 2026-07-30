@@ -1,6 +1,6 @@
 # Baby Turismo
 
-Sistema de gestão operacional desenvolvido para a Baby Turismo, empresa de transporte rodoviário de passageiros. Possui painel administrativo web para controle de frota, viagens, motoristas, financeiro e estoque, além de portal mobile para motoristas com checklists, abastecimentos e reportes em tempo real.
+Sistema de gestão operacional desenvolvido para Baby Turismo, empresa de transporte rodoviário de passageiros. Possui painel administrativo web para controle de frota, viagens, motoristas, financeiro e estoque, além de portal mobile para motoristas com checklists, abastecimentos e reportes em tempo real.
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
